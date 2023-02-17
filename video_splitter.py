@@ -1,6 +1,8 @@
-import ffmpeg
+from ffmpeg_split import split_by_seconds
+import shutil
 
-stream = ffmpeg.input('input.mov')
-stream = ffmpeg.hflip(stream)
-stream = ffmpeg.output(stream, 'output.mp4')
-ffmpeg.run(stream)
+def split(filename, seconds=30):
+	split_by_seconds('vid/input.mov', 2, 'h264')
+
+def remove(filename):
+	shutil.rmtree(filename)
