@@ -106,6 +106,7 @@ def split_by_seconds(filename, split_length, vcodec="copy", acodec="copy",
         fileext = filename.split(".")[-1]
     except IndexError as e:
         raise IndexError("No . in filename. Error: " + str(e))
+    output_filenames = []
     for n in range(0, split_count):
         split_args = []
         if n == 0:
@@ -118,6 +119,9 @@ def split_by_seconds(filename, split_length, vcodec="copy", acodec="copy",
                        str(split_count) + "." + fileext]
         print("About to run: " + " ".join(split_cmd + split_args))
         subprocess.check_output(split_cmd + split_args)
+        output_filenames.append(filebase + "-" + str(n + 1) + "-of-" +
+                       str(split_count) + "." + fileext)
+    return output_filenames
 
 
 def main():
