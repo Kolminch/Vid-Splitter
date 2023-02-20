@@ -22,13 +22,19 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
     file_id = update.message.video.file_id
     new_file = await context.bot.get_file(file_id)
     video_name = await new_file.download_to_drive("vid/video.mp4")
-    logger.info("Saved %s ", video_name[2])
-     
+    logger.info("Saved %s ", video_name)
+
     # split
-    split_videos = vs.split("vid/video.mp4")
+    split_videos = vs.split(str(video_name))
     
     for v in split_videos:
         await context.bot.send_video(chat_id=update.effective_chat.id, video=v)
+    
+    # Remove files to reuse folder    
+    vs.remove(split_videos)
+    vs.remove([str(video_name)])
+    logger.info("Removed %s and split videos", video_name)
+    
 
 if __name__ == '__main__':
     print(settings.BOT_TOKEN)
