@@ -7,8 +7,10 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-import video_splitter as vs
+from video_splitter import Video_splitter
 import settings
+
+vs = Video_splitter()
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -17,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Start bot"""
     user = update.message.from_user
     logger.info("%s started the bot", user.first_name.title())
     await context.bot.send_message(
@@ -25,23 +28,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Send help message to bot."""
     user = update.message.from_user
     message = f"""
-        Hello {user.first_name}, welcome to Video Splitter by @yaw_o_k .
-        Commands:
-        /start : Start the bot
-        /help : Show this information
-        /split_size (args: seconds): Change split size seconds. eg /split_size 5 ie. Changes split size from 30 seconds(default) to 5 seconds
+    Hello {user.first_name}, welcome to Video Splitter by @yaw_o_k .
+    Commands:
+    /start : Start the bot
+    /help : Show this information
+    /split_size (args: seconds): Change split size seconds. eg "/split_size 5" ie. Changes split size from 30 seconds(default) to 5 seconds
     """
     logger.info("%s started the bot", user.first_name.title())
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 
 async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Change seconds a video will be divided into."""
     user_input = update.message.text.split(" ")[1]
     if int(user_input):
-        settings.change_split_size(int(user_input))
-        print(settings.SPLIT_SIZE)
+        seconds = vs.change_seconds(new_seconds=int(user_input))
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f"Video split size has changed to {user_input}",
@@ -56,6 +60,7 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Split video and send files to bot."""
     # Download file.
     file_id = update.message.video.file_id
     new_file = await context.bot.get_file(file_id)
@@ -85,7 +90,5 @@ if __name__ == "__main__":
     application.add_handler(video_handler)
     application.add_handler(split_size_handler)
     application.add_handler(help_handler)
-    
-    
 
     application.run_polling()
