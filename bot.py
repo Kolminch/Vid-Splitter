@@ -43,21 +43,27 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Change seconds a video will be divided into."""
-    user_input = update.message.text.split(" ")[1]
-    if int(user_input):
-        seconds = vs.change_seconds(new_seconds=int(user_input))
+    try: 
+        user_input = update.message.text.split(" ")[1]
+        if int(user_input):
+            seconds = vs.change_seconds(new_seconds=int(user_input))
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=f"Video split size has changed to {user_input}",
+            )
+            logger.info("Video split size changed to %s seconds", user_input)
+        else:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=f"Wrong input. Enter a number instead.",
+            )
+            logger.info("Split size change attempt failed")
+    except IndexError:
         await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Video split size has changed to {user_input}",
+                chat_id=update.effective_chat.id,
+                text=f"Split size of a video is set to: {vs.seconds}",
         )
-        logger.info("Video split size changed to %s seconds", user_input)
-    else:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Wrong input. Enter a number instead.",
-        )
-        logger.info("Split size change attempt failed")
-
+        logger.info("Split size printed to user")
 
 async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Split video and send files to bot."""
