@@ -12,6 +12,12 @@ import settings
 
 vs = Video_splitter()
 
+## to do
+# handle value error for split size $$$DONE
+# handle error for large video files sent to bot
+# handle short video files sent to bot (shorter than split size)
+# host bot
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -45,25 +51,30 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Change seconds a video will be divided into."""
     try: 
         user_input = update.message.text.split(" ")[1]
-        if int(user_input):
-            seconds = vs.change_seconds(new_seconds=int(user_input))
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text=f"Video split size has changed to {user_input}",
-            )
-            logger.info("Video split size changed to %s seconds", user_input)
-        else:
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text=f"Wrong input. Enter a number instead.",
-            )
-            logger.info("Split size change attempt failed")
-    except IndexError:
+        vs.change_seconds(new_seconds=int(user_input))
         await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text=f"Split size of a video is set to: {vs.seconds}",
+            chat_id=update.effective_chat.id,
+            text=f"Video split size has changed to {user_input}",
+        )
+        logger.info("Video split size changed to %s seconds", user_input)
+    except IndexError:
+        # User requests to view split size by /split_size only
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"""Split size of a video is set to: {vs.seconds}
+            You can change the video split size by passing an argument with /split_size.
+            Eg: /split_size 5 (change split size of a video to 5 seconds)
+            """,
         )
         logger.info("Split size printed to user")
+    except TypeError:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"""Wrong input. Enter a number as an argument instead. 
+            Eg: /split_size 5 (change split size of a video to 5 seconds)
+            """,
+        )
+        logger.info("Split size change attempt failed")
 
 async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Split video and send files to bot."""
