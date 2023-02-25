@@ -1,5 +1,5 @@
 import logging
-from telegram import Update
+from telegram import Update, error
 from telegram.ext import (
     ApplicationBuilder,
     ContextTypes,
@@ -13,9 +13,6 @@ import settings
 vs = Video_splitter()
 
 ## to do
-# handle value error for split size $$$DONE
-# handle error for large video files sent to bot
-# handle short video files sent to bot (shorter than split size)
 # host bot
 
 logging.basicConfig(
@@ -49,7 +46,7 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Change seconds a video will be divided into."""
-    try: 
+    try:
         user_input = update.message.text.split(" ")[1]
         vs.change_seconds(new_seconds=int(user_input))
         await context.bot.send_message(
@@ -61,7 +58,8 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # User requests to view split size by /split_size only
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f"""Split size of a video is set to: {vs.seconds}
+            text=f"""
+            Split size of a video is set to: {vs.seconds}
             You can change the video split size by passing an argument with /split_size.
             Eg: /split_size 5 (change split size of a video to 5 seconds)
             """,
@@ -76,24 +74,52 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         logger.info("Split size change attempt failed")
 
+
 async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Split video and send files to bot."""
     # Download file.
-    file_id = update.message.video.file_id
-    new_file = await context.bot.get_file(file_id)
-    video_name = await new_file.download_to_drive("vid/video.mp4")
-    logger.info("Saved %s ", video_name)
+    try:
+        file_id = update.message.video.file_id
+        new_file = await context.bot.get_file(file_id)
+        video_name = await new_file.download_to_drive("vid/video.mp4")
+        logger.info("Saved %s ", video_name)
 
-    # split
-    split_videos = vs.split(str(video_name))
+        # split
+        split_videos = vs.split(str(video_name))
+        for v in split_videos:
+            await context.bot.send_video(chat_id=update.effective_chat.id, video=v)
 
-    for v in split_videos:
-        await context.bot.send_video(chat_id=update.effective_chat.id, video=v)
+        # Remove files to reuse folder
+        vs.remove(split_videos)
+        vs.remove([str(video_name)])
+        logger.info("Removed %s and split videos", video_name)
 
-    # Remove files to reuse folder
-    vs.remove(split_videos)
-    vs.remove([str(video_name)])
-    logger.info("Removed %s and split videos", video_name)
+    except error.BadRequest:
+        video_size = update.message.video.file_size
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"""Size of video too large to be saved. Please
+            try again with a smaller video size.
+            Current video size: {video_size}.
+            Bot filesize limit: 20mb.
+            """,
+        )
+        logger.info("Video too large; ask your to resend smaller video.")
+    except SystemExit:
+        video_duration = update.message.video.duration
+        message = f"""
+        Video duration is too short to be split.
+        Current video duration: {video_duration} seconds.
+        Current split size: {vs.seconds} seconds.
+        You can use /split_size {video_duration/2} to split video into 2.
+        """
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=message,
+        )
+        vs.remove([str(video_name)])
+        logger.info("Removed %s.", video_name)
+        logger.info("Ask user to change split size to suit video duration.")
 
 
 if __name__ == "__main__":
