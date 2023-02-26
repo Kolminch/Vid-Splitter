@@ -25,8 +25,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Start bot"""
     user = update.message.from_user
     logger.info("%s started the bot", user.first_name.title())
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!"
+    await update.message.reply_text(
+        "I am Video Splitter. Send a video. Split size is 30 seconds."
     )
 
 
@@ -34,14 +34,14 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send help message to bot."""
     user = update.message.from_user
     message = f"""
-    Hello {user.first_name}, welcome to Video Splitter by @yaw_o_k .
-    Commands:
-    /start : Start the bot
-    /help : Show this information
-    /split_size (args: seconds): Change split size seconds. eg "/split_size 5" ie. Changes split size from 30 seconds(default) to 5 seconds
+	Hello {user.first_name}, welcome to Video Splitter by @yaw_o_k .
+	Commands:
+	/start : Start the bot
+	/help : Show this information
+	/split_size (args: seconds): Change split size seconds. eg "/split_size 5" ie. Changes split size from 30 seconds(default) to 5 seconds
     """
     logger.info("%s started the bot", user.first_name.title())
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+    await update.message.reply_text(message)
 
 
 async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -49,16 +49,14 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_input = update.message.text.split(" ")[1]
         vs.change_seconds(new_seconds=int(user_input))
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Video split size has changed to {user_input}",
+        await update.message.reply_text(
+            f"Video split size has changed to {user_input}",
         )
         logger.info("Video split size changed to %s seconds", user_input)
     except IndexError:
         # User requests to view split size by /split_size only
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"""
+        await update.message.reply_text(
+            f"""
             Split size of a video is set to: {vs.seconds}
             You can change the video split size by passing an argument with /split_size.
             Eg: /split_size 5 (change split size of a video to 5 seconds)
@@ -66,9 +64,8 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         logger.info("Split size printed to user")
     except TypeError:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"""Wrong input. Enter a number as an argument instead. 
+        await update.message.reply_text(
+            f"""Wrong input. Enter a number as an argument instead. 
             Eg: /split_size 5 (change split size of a video to 5 seconds)
             """,
         )
@@ -96,9 +93,8 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     except error.BadRequest:
         video_size = update.message.video.file_size
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"""Size of video too large to be saved. Please
+        await update.message.reply_text(
+            f"""Size of video too large to be saved. Please
             try again with a smaller video size.
             Current video size: {video_size}.
             Bot filesize limit: 20mb.
@@ -113,10 +109,7 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
         Current split size: {vs.seconds} seconds.
         You can use /split_size {video_duration/2} to split video into 2.
         """
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=message,
-        )
+        await update.message.reply_text(message)
         vs.remove([str(video_name)])
         logger.info("Removed %s.", video_name)
         logger.info("Ask user to change split size to suit video duration.")
