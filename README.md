@@ -5,7 +5,6 @@ Used ffmpeg-split from (Harry Jackson)[https://github.com/harryjackson/ffmpeg_sp
 
 ![Project Image](project-image-url)
 
-> This is a ReadMe template to help save you time and effort.
 
 ---
 
@@ -22,11 +21,11 @@ You're sections headers will be used to reference location of destination.
 
 ## Description
 
-Creating ReadMe's for your Github repository can be tedious.  I hope this template can save you time and effort as well as provide you with some consistency across your projects.
+Video Splitter is a telegram bot which divides input(videos) of any length, splitts the video into equal parts and sends it to the user.
 
 #### Technologies
 
-- Technology 1
+- Python Telegram Bot
 - Technology 2
 
 [Back To The Top](#read-me-template)
@@ -57,7 +56,7 @@ Creating ReadMe's for your Github repository can be tedious.  I hope this templa
 
 MIT License
 
-Copyright (c) [2017] [James Q Quick]
+Copyright (c) 2023 Kenneth Yaw Obeng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,13 +76,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
 [Back To The Top](#read-me-template)
 
 ---
 
 ## Author Info
 
-- Twitter - [@jamesqquick](https://twitter.com/jamesqquick)
-- Website - [James Q Quick](https://jamesqquick.com)
+- Twitter - [@obengky](https://twitter.com/obengky)
 
 [Back To The Top](#read-me-template)
