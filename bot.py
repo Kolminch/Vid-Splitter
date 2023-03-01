@@ -50,7 +50,7 @@ async def split_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_input = update.message.text.split(" ")[1]
         vs.change_seconds(new_seconds=int(user_input))
         await update.message.reply_text(
-            f"Video split size has changed to {user_input}",
+            f"Video split size has changed to {user_input} seconds.",
         )
         logger.info("Video split size changed to %s seconds", user_input)
     except IndexError:
@@ -94,11 +94,12 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except error.BadRequest:
         video_size = update.message.video.file_size
         await update.message.reply_text(
-            f"""Size of video too large to be saved. Please
-            try again with a smaller video size.
-            Current video size: {video_size}.
-            Bot filesize limit: 20mb.
-            """,
+            f"""
+		Size of video too large to be saved. Please
+		try again with a smaller video size.
+		Current video size: {int(video_size/1000000)}mb.
+		Bot filesize limit: 20mb.
+        """,
         )
         logger.info("Video too large; ask your to resend smaller video.")
     except SystemExit:
