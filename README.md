@@ -1,10 +1,7 @@
-# tg_video_splitter_bot
-A telegram bot that splits videos into equal parts using (python-ffmpeg)[https://github.com/kkroening/ffmpeg-python]
-Used ffmpeg-split from (Harry Jackson)[https://github.com/harryjackson/ffmpeg_split]
-# Read Me Template
+# Video Splitter 
 
-![Project Image](project-image-url)
-
+<img src="img0.jpg" width="360" height="740" style="padding: 20px;"></img>
+<img src="img1.jpg" width="360" height="740" style="padding: 20px;"></img>
 
 ---
 
@@ -25,30 +22,30 @@ Video Splitter is a telegram bot which divides input(videos) of any length, spli
 
 #### Technologies
 
-- Python Telegram Bot
-- Technology 2
+- [Python Telegram Bot](https://github.com/python-telegram-bot)
+- [FFmpeg](https://github.com/FFmpeg/FFmpeg)
+- Hosted on [Code Capsules](https://codecapsules.io/)
 
-[Back To The Top](#read-me-template)
+<a href="#">Back To The Top</a>
 
 ---
 
 ## How To Use
+Visit [Video Splitter](https://t.me/whatsapp_video_splitterbot) on Telegram to try out the bot.
 
-#### Installation
+Commands:
+- /start : Start the bot.
+- /help : Show this information.
+- /split_size (args: seconds): Change split size seconds. eg "/split_size 5" ie. Changes split size from 30 seconds(default) to 5 seconds.
 
-
-
-#### API Reference
-
-```html
-    <p>dummy code</p>
-```
-[Back To The Top](#read-me-template)
+<a href="#">Back To The Top</a>
 
 ---
 
 ## References
-[Back To The Top](#read-me-template)
+- Harry Jackson's [ffmpeg_split](https://github.com/harryjackson/ffmpeg_split) -  (built on [python-ffmpeg](https://github.com/kkroening/ffmpeg-python))
+
+<a href="#">Back To The Top</a>
 
 ---
 
@@ -76,8 +73,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
-[Back To The Top](#read-me-template)
+<a href="#">Back To The Top</a>
 
 ---
 
@@ -85,4 +81,4 @@ SOFTWARE.
 
 - Twitter - [@obengky](https://twitter.com/obengky)
 
-[Back To The Top](#read-me-template)
+<a href="#">Back To The Top</a>
