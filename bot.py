@@ -130,6 +130,11 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == "__main__":
+	# Create vid folder
+	try:
+		os.mkdir("vid")
+	except FileExistsError:
+		logger.info("vid folder already exists.")
 	PORT = int(os.environ.get('PORT', '8443'))
 	application = ApplicationBuilder().token(settings.BOT_TOKEN).build()
 
