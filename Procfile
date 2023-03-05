@@ -1,1 +1,1 @@
-python: python bot.py
+python: python bot.py && mkdir vid

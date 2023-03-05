@@ -142,6 +142,8 @@ if __name__ == "__main__":
 	application.add_handler(split_size_handler)
 	application.add_handler(help_handler)
 
+	# application.run_polling()
+
 	application.run_webhook(
     listen="0.0.0.0",
     port=PORT,
