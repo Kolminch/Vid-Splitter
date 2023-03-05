@@ -1,4 +1,5 @@
 import logging
+import os
 from telegram import Update, error
 from telegram.ext import (
     ApplicationBuilder,
@@ -129,6 +130,7 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == "__main__":
+	PORT = int(os.environ.get('PORT', '8443'))
 	application = ApplicationBuilder().token(settings.BOT_TOKEN).build()
 
 	start_handler = CommandHandler("start", start)
@@ -140,4 +142,9 @@ if __name__ == "__main__":
 	application.add_handler(split_size_handler)
 	application.add_handler(help_handler)
 
-	application.run_polling()
+	application.run_webhook(
+    listen="0.0.0.0",
+    port=PORT,
+    secret_token=settings.SECRET_TOKEN,
+    webhook_url="tgvideosplitterbot-production.up.railway.app"
+)
