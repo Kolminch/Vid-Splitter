@@ -153,5 +153,5 @@ if __name__ == "__main__":
     listen="0.0.0.0",
     port=PORT,
     secret_token=settings.SECRET_TOKEN,
-    webhook_url="tgvideosplitterbot-production.up.railway.app"
+    webhook_url="katana.up.railway.app"
 )
