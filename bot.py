@@ -82,6 +82,7 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
 	"""Split video and send files to bot."""
 	# Download file.
 	sticker = await context.bot.send_sticker(chat_id=update.effective_chat.id, sticker="loading.tgs")
+	sent_videos = []
 	try:
 		file_id = update.message.video.file_id
 		new_file = await context.bot.get_file(file_id)
@@ -92,6 +93,7 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # split
 		split_videos = vs.split(str(video_name))
 		for v in split_videos:
+			sent_videos.append(v)
 			await context.bot.send_video(chat_id=update.effective_chat.id, video=v)
 
         # Remove files to reuse folder
@@ -126,6 +128,19 @@ async def split(update: Update, context: ContextTypes.DEFAULT_TYPE):
 		vs.remove([str(video_name)])
 		logger.info("Removed %s.", video_name)
 		logger.info("Ask user to change split size to suit video duration.")
+		await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=sticker.id)
+	except error.TimedOut:
+		for v in split_videos:
+			if v not in sent_videos:
+				sent_videos.append(v)
+				await context.bot.send_video(chat_id=update.effective_chat.id, video=v)
+		
+		# Remove files to reuse folder
+		vs.remove(split_videos)
+		vs.remove([str(video_name)])
+		logger.info("Removed %s and split videos", video_name)
+		print(sticker.id)
+		print(sticker)
 		await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=sticker.id)
 
 
